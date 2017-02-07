@@ -1,7 +1,7 @@
 import pyautogui,sys,win32gui,random,time,getopt
 
 
-def callback2(hwnd, extra):
+def callback(hwnd, extra):
     rect = win32gui.GetWindowRect(hwnd)
     x = rect[0]
     y = rect[1]
@@ -35,7 +35,7 @@ def main(argv):
     time.sleep(sleepSec)
     from pythonds.basic.stack import Stack
     s = Stack()
-    win32gui.EnumWindows(callback2, s)
+    win32gui.EnumWindows(callback, s)
 
     win_x = -1
     win_y = -1
