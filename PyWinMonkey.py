@@ -1,6 +1,5 @@
 import pyautogui,win32gui,random,time,win32api,pywinauto
 
-
 def callback(hwnd, extra):
     rect = win32gui.GetWindowRect(hwnd)
     x = rect[0]
@@ -43,11 +42,37 @@ def winfun(hwnd,lparm):
         # time.sleep(3)
     return 1
 
-def GoSimulate(windowName,clickCount,sleepBefore):
+def random_activities(clickCount, winX, winY, win_width, win_height):
+    for i in range(int(clickCount)):
+        # print(str(i))
+        xposition = random.randint(winX + 20, winX + win_width - 20)
+        yposition = random.randint(winY + 20, winY + win_height - 20)
+        # print(str(xposition)+","+str(yposition))
+        if yposition >= win32api.GetSystemMetrics(1):
+            yposition -= 50
+        click_or_rightClick = random.randint(0, 9)
+
+        sleepBetween = random.randint(0, 2)
+        time.sleep(sleepBetween)
+        if click_or_rightClick <= 4:
+            pyautogui.click(xposition, yposition)
+        elif click_or_rightClick >= 5 and click_or_rightClick <= 7:
+            pyautogui.rightClick(xposition, yposition)
+            right_prob = random.randint(1, 10)
+            if right_prob <= 4:
+                y_top = random.randint(1, 200)
+                pyautogui.click(xposition + 50, yposition - y_top)
+        else:
+            pyautogui.scroll(10)
+
+def GoSimulate(windowName, clickCount, sleepBefore, work_with_window = True):
 
     print(windowName+", "+str(clickCount)+", "+str(sleepBefore))
     if windowName == "":
         print("Error: Window name not found...")
+        if not work_with_window:
+            random_activities(10,600,100,1000,500)
+            return
     time.sleep(sleepBefore)
     from pythonds.basic.stack import Stack
     s = Stack()
@@ -76,24 +101,4 @@ def GoSimulate(windowName,clickCount,sleepBefore):
         if hwnd:
             win32gui.EnumChildWindows(hwnd, winfun, None)
 
-        for i in range(int(clickCount)):
-            #print(str(i))
-            xposition=random.randint(win_x+20,win_x+win_width-20)
-            yposition = random.randint(win_y + 20, win_y + win_height - 20)
-            #print(str(xposition)+","+str(yposition))
-            if yposition>=win32api.GetSystemMetrics(1):
-                yposition-=50
-            click_or_rightClick=random.randint(0,9)
-
-            sleepBetween=random.randint(0,2)
-            time.sleep(sleepBetween)
-            if click_or_rightClick<=4:
-                pyautogui.click(xposition,yposition)
-            elif click_or_rightClick>=5 and click_or_rightClick<=7:
-                pyautogui.rightClick(xposition, yposition)
-                right_prob=random.randint(1,10)
-                if right_prob<=4:
-                    y_top=random.randint(1,200)
-                    pyautogui.click(xposition+50, yposition-y_top)
-            else:
-                pyautogui.scroll(10)
+        random_activities(clickCount, win_x, win_y, win_width, win_height)
